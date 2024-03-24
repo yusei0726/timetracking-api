@@ -1,0 +1,283 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Timetracking API
+  license:
+    name: MIT
+servers:
+  - url: http://timetracking/api/v1
+paths:
+  /attendances/start:
+    post:
+      summary: Record the start of attendance.
+      operationId: postAttendancesStart
+      tags:
+        - attendance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - time_in
+              properties:
+                user_id:
+                  type: string
+                  description: ユーザーID
+                  example: "12345"
+                time_in:
+                  type: string
+                  format: date-time
+                  description: 出勤時刻（オプション）
+                  example: "2024-03-21T08:00:00Z"
+      responses:
+        '200':
+          description: Attendance recorded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Invalid request
+        '500':
+          description: Server error
+  /attendances/end:
+    post:
+      summary: Record the end of attendance.
+      operationId: postAttendancesEnd
+      tags:
+        - attendance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - time_out
+              properties:
+                user_id:
+                  type: string
+                  description: User ID
+                  example: "12345"
+                time_out:
+                  type: string
+                  format: date-time
+                  description: Time of clocking out (optional)
+                  example: "2024-03-21T17:00:00Z"
+      responses:
+        '200':
+          description: Attendance ended successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Invalid request
+        '500':
+          description: Server error
+  /attendances/{user_id}:
+    get:
+      summary: Retrieve attendance records for a specific user on a specified date.
+      operationId: getAttendanceByUserId
+      tags:
+        - attendance
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: The ID of the user whose attendance record is to be retrieved.
+          schema:
+            type: string
+        - name: date
+          in: query
+          required: false
+          description: The specific date for which the attendance record is to be retrieved.
+          schema:
+            type: string
+            format: date
+            example: '2024-03-21'
+      responses:
+        '200':
+          description: The attendance record for the specified user on the given date.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attendances'
+        '400':
+          description: Invalid request parameters
+        '404':
+          description: User or attendance record not found
+        '500':
+          description: Server error
+  /breaks/start:
+    post:
+      summary: Record the start of a break.
+      operationId: postBreaksStart
+      tags:
+        - break
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - break_start
+              properties:
+                user_id:
+                  type: string
+                  description: User ID
+                  example: "12345"
+                break_start:
+                  type: string
+                  format: date-time
+                  description: Time of starting the break
+                  example: "2024-03-21T10:30:00Z"
+      responses:
+        '200':
+          description: Break started successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Invalid request
+        '500':
+          description: Server error
+  /breaks/end:
+    post:
+      summary: Record the end of a break.
+      operationId: postBreaksEnd
+      tags:
+        - break
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - break_end
+              properties:
+                user_id:
+                  type: string
+                  description: User ID
+                  example: "12345"
+                break_end:
+                  type: string
+                  format: date-time
+                  description: Time of ending the break
+                  example: "2024-03-21T10:45:00Z"
+      responses:
+        '200':
+          description: Break ended successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Invalid request
+        '500':
+          description: Server error
+  /breaks/{user_id}:
+    get:
+      summary: Retrieve break records for a specific user.
+      operationId: getBreaksByUserId
+      tags:
+        - break
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: The ID of the user whose break records are to be retrieved.
+          schema:
+            type: string
+        - name: date
+          in: query
+          required: true
+          description: The specific date for which the break records are to be retrieved.
+          schema:
+            type: string
+            format: date
+            example: '2024-03-21'
+      responses:
+        '200':
+          description: A list of break records for the specified user on the given date.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BreakRecord'
+        '400':
+          description: Invalid request parameters
+        '404':
+          description: Break records not found
+        '500':
+          description: Server error
+components:
+  schemas:
+    Attendances:
+      type: object
+      properties:
+        user_id:
+          type: string
+          description: The ID of the user to whom the attendance record belongs.
+        date:
+          type: string
+          format: date
+          description: The date of the attendance record.
+        time_in:
+          type: string
+          format: date-time
+          description: The clock-in time.
+        time_out:
+          type: string
+          format: date-time
+          description: The clock-out time.
+      required:
+        - user_id
+        - date
+        - time_in
+        - time_out
+    BreakRecord:
+      type: object
+      properties:
+        user_id:
+          type: string
+          description: The ID of the user to whom the break record belongs.
+        date:
+          type: string
+          format: date
+          description: The date of the attendance record.
+        break_start:
+          type: string
+          format: date-time
+          description: The start time of the break.
+        break_end:
+          type: string
+          format: date-time
+          description: The end time of the break.
+      required:
+        - user_id
+        - date
+        - break_start
+        - break_end

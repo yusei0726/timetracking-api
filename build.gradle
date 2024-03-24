@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.3'
     id 'io.spring.dependency-management' version '1.1.4'
+    id "org.openapi.generator" version "6.6.0"
 }
 
 group = 'com.example'
@@ -29,8 +30,47 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    implementation 'mysql:mysql-connector-java:8.0.23'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "$rootDir/openapi/v1.yaml".toString()
+    outputDir = "$buildDir/generated".toString()
+    apiPackage = "com.example.timetrackingapi.controller"
+    invokerPackage = "com.example.timetrackingapi.invoker"
+    modelPackage = "com.example.timetrackingapi.controller.model"
+    generateModelTests = false
+    generateApiTests = false
+    generateModelDocumentation = false
+    generateApiDocumentation = false
+    // https://openapi-generator.tech/docs/generators/spring
+    configOptions = [
+            dataLibrary          : "java8",
+            documentationProvider: "springdoc",
+            interfaceOnly        : "true",
+            skipDefaultInterface : "true",
+            useSpringBoot3 : "true",
+            useJakartaEe : "true",
+    ]
+}
+
+compileJava.dependsOn tasks.openApiGenerate
+
+sourceSets {
+    main {
+        java {
+            srcDir "${openApiGenerate.outputDir.get()}/src/main/java"
+        }
+    }
 }
