@@ -4,3 +4,8 @@ spring:
     url: ${DATASOURCE_URL}
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
+  jpa:
+    show-sql: true
+  sql:
+    init:
+      mode: always

@@ -24,7 +24,7 @@ paths:
                 - time_in
               properties:
                 user_id:
-                  type: string
+                  type: integer
                   description: ユーザーID
                   example: "12345"
                 time_in:
