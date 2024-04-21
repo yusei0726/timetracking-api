@@ -136,7 +136,7 @@ paths:
                 - break_start
               properties:
                 user_id:
-                  type: string
+                  type: integer
                   description: User ID
                   example: "12345"
                 break_start:
@@ -175,7 +175,7 @@ paths:
                 - break_end
               properties:
                 user_id:
-                  type: string
+                  type: integer
                   description: User ID
                   example: "12345"
                 break_end:
@@ -209,7 +209,7 @@ paths:
           required: true
           description: The ID of the user whose break records are to be retrieved.
           schema:
-            type: string
+            type: integer
         - name: date
           in: query
           required: true
@@ -262,7 +262,7 @@ components:
       type: object
       properties:
         user_id:
-          type: string
+          type: integer
           description: The ID of the user to whom the break record belongs.
         date:
           type: string
