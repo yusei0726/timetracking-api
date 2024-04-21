@@ -1,9 +1,16 @@
 package com.example.timetrackingapi.controller;
 
+import com.example.timetrackingapi.controller.converter.BreakConverter;
 import com.example.timetrackingapi.controller.model.BreakRecord;
 import com.example.timetrackingapi.controller.model.PostAttendancesStart200Response;
 import com.example.timetrackingapi.controller.model.PostBreaksEndRequest;
 import com.example.timetrackingapi.controller.model.PostBreaksStartRequest;
+import com.example.timetrackingapi.domain.AttendanceEntity;
+import com.example.timetrackingapi.domain.BreakEntity;
+import com.example.timetrackingapi.service.AttendanceService;
+import com.example.timetrackingapi.service.BreakService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,10 +18,26 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class BreakController implements BreaksApi{
+    private final AttendanceService attendanceService;
+    private final BreakService breakService;
+    private final BreakConverter converter;
+
     @Override
-    public ResponseEntity<List<BreakRecord>> getBreaksByUserId(String userId, LocalDate date) {
-        return null;
+    public ResponseEntity<List<BreakRecord>> getBreaksByUserId(Integer userId, LocalDate date) {
+        AttendanceEntity attendanceEntity = attendanceService.getAttendancesByUserIdAndDate(date, userId);
+        if (attendanceEntity == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        List<BreakEntity> breakEntityList = breakService.getBreakByAttendance(attendanceEntity.getAttendanceId());
+        List<BreakRecord> breakRecordList = breakEntityList
+                .stream()
+                .map(converter)
+                .toList();
+
+        return ResponseEntity.ok(breakRecordList);
     }
 
     @Override

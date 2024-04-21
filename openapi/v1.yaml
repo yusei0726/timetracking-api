@@ -261,13 +261,6 @@ components:
     BreakRecord:
       type: object
       properties:
-        user_id:
-          type: integer
-          description: The ID of the user to whom the break record belongs.
-        date:
-          type: string
-          format: date
-          description: The date of the attendance record.
         break_start:
           type: string
           format: date-time
@@ -277,7 +270,5 @@ components:
           format: date-time
           description: The end time of the break.
       required:
-        - user_id
-        - date
         - break_start
         - break_end
