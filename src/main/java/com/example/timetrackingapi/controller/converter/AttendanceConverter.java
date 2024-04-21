@@ -5,6 +5,7 @@ import com.example.timetrackingapi.domain.AttendanceEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.ZoneOffset;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Service
@@ -14,8 +15,13 @@ public class AttendanceConverter implements Function<AttendanceEntity, Attendanc
         return new Attendances(
                 attendanceEntity.getUserId(),
                 attendanceEntity.getDate(),
-                attendanceEntity.getTimeIn().atOffset(ZoneOffset.ofHours(9)),
-                attendanceEntity.getTimeOut().atOffset(ZoneOffset.ofHours(9))
+                Optional.ofNullable(attendanceEntity.getTimeIn())
+                        .map(timeIn -> timeIn.atOffset(ZoneOffset.ofHours(9)))
+                        .orElse(null)
+                ,
+                Optional.ofNullable(attendanceEntity.getTimeOut())
+                        .map(timeOut -> timeOut.atOffset(ZoneOffset.ofHours(9)))
+                        .orElse(null)
         );
     }
 }

@@ -9,16 +9,18 @@ import com.example.timetrackingapi.domain.AttendanceEntity;
 import com.example.timetrackingapi.domain.BreakEntity;
 import com.example.timetrackingapi.service.AttendanceService;
 import com.example.timetrackingapi.service.BreakService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class BreakController implements BreaksApi{
     private final AttendanceService attendanceService;
     private final BreakService breakService;
@@ -46,7 +48,26 @@ public class BreakController implements BreaksApi{
     }
 
     @Override
-    public ResponseEntity<PostAttendancesStart200Response> postBreaksStart(PostBreaksStartRequest postBreaksStartRequest) {
-        return null;
+    public ResponseEntity<PostAttendancesStart200Response> postBreaksStart(PostBreaksStartRequest request) {
+        OffsetDateTime breakStart = request.getBreakStart();
+        AttendanceEntity attendanceEntity = attendanceService.getAttendancesByUserIdAndDate(
+                breakStart.toLocalDate(),
+                request.getUserId());
+
+        var response = new PostAttendancesStart200Response();
+        if (attendanceEntity == null) {
+            response.setMessage("attendances not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        BreakEntity breakEntity = breakService.postBreakStart(attendanceEntity, breakStart);
+
+        if (breakEntity == null) {
+            response.setMessage("latest break has not yet ended.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
+
+        response.setMessage("break recorded successfully.");
+        return ResponseEntity.ok(response);
     }
 }
