@@ -43,8 +43,27 @@ public class BreakController implements BreaksApi{
     }
 
     @Override
-    public ResponseEntity<PostAttendancesStart200Response> postBreaksEnd(PostBreaksEndRequest postBreaksEndRequest) {
-        return null;
+    public ResponseEntity<PostAttendancesStart200Response> postBreaksEnd(PostBreaksEndRequest request) {
+        OffsetDateTime breakEnd = request.getBreakEnd();
+        AttendanceEntity attendanceEntity = attendanceService.getAttendancesByUserIdAndDate(
+                breakEnd.toLocalDate(),
+                request.getUserId());
+
+        var response = new PostAttendancesStart200Response();
+        if (attendanceEntity == null) {
+            response.setMessage("attendances not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        BreakEntity breakEntity = breakService.postBreakEnd(attendanceEntity, breakEnd);
+
+        if (breakEntity == null) {
+            response.setMessage("latest break not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        response.setMessage("break recorded successfully.");
+        return ResponseEntity.ok(response);
     }
 
     @Override

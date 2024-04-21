@@ -37,4 +37,18 @@ public class BreakService {
 
         return repository.findByAttendanceId(attendanceId);
     }
+
+    public BreakEntity postBreakEnd(AttendanceEntity attendanceEntity, OffsetDateTime breakEnd) {
+        if (attendanceEntity == null || breakEnd == null) {
+            throw new IllegalArgumentException();
+        }
+
+        BreakEntity latestBreak = repository.findLatestBreakByAttendanceId(attendanceEntity.getAttendanceId());
+        if (latestBreak == null) {
+            return null;
+        }
+
+        latestBreak.setBreakEnd(breakEnd.toLocalDateTime());
+        return repository.save(latestBreak);
+    }
 }
