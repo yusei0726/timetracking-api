@@ -1,5 +1,6 @@
 package com.example.timetrackingapi.controller;
 
+import com.example.timetrackingapi.controller.converter.AttendanceConverter;
 import com.example.timetrackingapi.controller.model.Attendances;
 import com.example.timetrackingapi.controller.model.PostAttendancesEndRequest;
 import com.example.timetrackingapi.controller.model.PostAttendancesStart200Response;
@@ -17,11 +18,20 @@ import java.time.OffsetDateTime;
 @RestController
 @AllArgsConstructor
 public class AttendanceController implements AttendancesApi {
+    private final AttendanceConverter converter;
     private final AttendanceService attendanceService;
 
     @Override
-    public ResponseEntity<Attendances> getAttendanceByUserId(String userId, LocalDate date) {
-        return null;
+    public ResponseEntity<Attendances> getAttendanceByUserId(Integer userId, LocalDate date) {
+
+        AttendanceEntity attendanceEntity = attendanceService.getAttendancesByUserIdAndDate(date, userId);
+
+        if (attendanceEntity != null) {
+            Attendances attendances = converter.apply(attendanceEntity);
+            return ResponseEntity.ok(attendances);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @Override

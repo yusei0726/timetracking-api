@@ -5,6 +5,7 @@ import com.example.timetrackingapi.infrastructure.AttendanceRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -42,5 +43,13 @@ public class AttendanceService {
         AttendanceEntity attendance = existingAttendances.get(0);
         attendance.setTimeOut(timeOut.toLocalDateTime());
         return repository.save(attendance);
+    }
+
+    public AttendanceEntity getAttendancesByUserIdAndDate(LocalDate date, Integer userId) {
+        if (date == null || userId == null) {
+            throw new IllegalArgumentException();
+        }
+        List<AttendanceEntity> attendance = repository.findByUserIdAndDate(userId, date);
+        return attendance.isEmpty() ? null : attendance.get(0);
     }
 }
