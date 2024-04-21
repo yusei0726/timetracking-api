@@ -8,7 +8,6 @@ import com.example.timetrackingapi.domain.AttendanceEntity;
 import com.example.timetrackingapi.service.AttendanceService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,8 +25,20 @@ public class AttendanceController implements AttendancesApi {
     }
 
     @Override
-    public ResponseEntity<PostAttendancesStart200Response> postAttendancesEnd(PostAttendancesEndRequest postAttendancesEndRequest) {
-        return null;
+    public ResponseEntity<PostAttendancesStart200Response> postAttendancesEnd(PostAttendancesEndRequest request) {
+        OffsetDateTime timeOut = request.getTimeOut();
+        Integer userId = request.getUserId();
+
+        AttendanceEntity attendanceEntity = attendanceService.postAttendancesEnd(timeOut, userId);
+
+        var response = new PostAttendancesStart200Response();
+        if (attendanceEntity != null) {
+            response.setMessage("Attendance recorded successfully.");
+            return ResponseEntity.ok(response);
+        } else {
+            response.setMessage("Attendance record is not exists.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
 
     @Override

@@ -63,7 +63,7 @@ paths:
                 - time_out
               properties:
                 user_id:
-                  type: string
+                  type: integer
                   description: User ID
                   example: "12345"
                 time_out:
