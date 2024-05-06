@@ -24,7 +24,7 @@ paths:
                 - time_in
               properties:
                 user_id:
-                  type: integer
+                  type: string
                   description: ユーザーID
                   example: "12345"
                 time_in:
@@ -63,7 +63,7 @@ paths:
                 - time_out
               properties:
                 user_id:
-                  type: integer
+                  type: string
                   description: User ID
                   example: "12345"
                 time_out:
@@ -97,7 +97,7 @@ paths:
           required: true
           description: The ID of the user whose attendance record is to be retrieved.
           schema:
-            type: integer
+            type: string
         - name: date
           in: query
           required: false
@@ -136,7 +136,7 @@ paths:
                 - break_start
               properties:
                 user_id:
-                  type: integer
+                  type: string
                   description: User ID
                   example: "12345"
                 break_start:
@@ -175,7 +175,7 @@ paths:
                 - break_end
               properties:
                 user_id:
-                  type: integer
+                  type: string
                   description: User ID
                   example: "12345"
                 break_end:
@@ -209,7 +209,7 @@ paths:
           required: true
           description: The ID of the user whose break records are to be retrieved.
           schema:
-            type: integer
+            type: string
         - name: date
           in: query
           required: true
@@ -239,7 +239,7 @@ components:
       type: object
       properties:
         user_id:
-          type: Integer
+          type: string
           description: The ID of the user to whom the attendance record belongs.
         date:
           type: string

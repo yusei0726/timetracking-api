@@ -14,7 +14,7 @@ import java.util.List;
 public class AttendanceService {
     private final AttendanceRepository repository;
 
-    public AttendanceEntity postAttendancesStart(OffsetDateTime timeIn, Integer userId) {
+    public AttendanceEntity postAttendancesStart(OffsetDateTime timeIn, String userId) {
         if (timeIn == null || userId == null) {
             throw new IllegalArgumentException();
         }
@@ -31,7 +31,7 @@ public class AttendanceService {
         }
     }
 
-    public AttendanceEntity postAttendancesEnd(OffsetDateTime timeOut, Integer userId) {
+    public AttendanceEntity postAttendancesEnd(OffsetDateTime timeOut, String userId) {
         if (timeOut == null || userId == null) {
             throw new IllegalArgumentException();
         }
@@ -45,7 +45,7 @@ public class AttendanceService {
         return repository.save(attendance);
     }
 
-    public AttendanceEntity getAttendancesByUserIdAndDate(LocalDate date, Integer userId) {
+    public AttendanceEntity getAttendancesByUserIdAndDate(LocalDate date, String userId) {
         if (date == null || userId == null) {
             throw new IllegalArgumentException();
         }

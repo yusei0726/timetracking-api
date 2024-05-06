@@ -7,5 +7,5 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface AttendanceRepository extends JpaRepository<AttendanceEntity, Integer> {
-    List<AttendanceEntity> findByUserIdAndDate(Integer userId, LocalDate date);
+    List<AttendanceEntity> findByUserIdAndDate(String userId, LocalDate date);
 }

@@ -10,11 +10,13 @@ import com.example.timetrackingapi.service.AttendanceService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
+@CrossOrigin(origins = "*")
 @RestController
 @AllArgsConstructor
 public class AttendanceController implements AttendancesApi {
@@ -22,7 +24,7 @@ public class AttendanceController implements AttendancesApi {
     private final AttendanceService attendanceService;
 
     @Override
-    public ResponseEntity<Attendances> getAttendanceByUserId(Integer userId, LocalDate date) {
+    public ResponseEntity<Attendances> getAttendanceByUserId(String userId, LocalDate date) {
 
         AttendanceEntity attendanceEntity = attendanceService.getAttendancesByUserIdAndDate(date, userId);
 
@@ -37,7 +39,7 @@ public class AttendanceController implements AttendancesApi {
     @Override
     public ResponseEntity<PostAttendancesStart200Response> postAttendancesEnd(PostAttendancesEndRequest request) {
         OffsetDateTime timeOut = request.getTimeOut();
-        Integer userId = request.getUserId();
+        String userId = request.getUserId();
 
         AttendanceEntity attendanceEntity = attendanceService.postAttendancesEnd(timeOut, userId);
 
@@ -54,7 +56,7 @@ public class AttendanceController implements AttendancesApi {
     @Override
     public ResponseEntity<PostAttendancesStart200Response> postAttendancesStart(PostAttendancesStartRequest request) {
         OffsetDateTime timeIn = request.getTimeIn();
-        Integer userId = request.getUserId();
+        String userId = request.getUserId();
 
         AttendanceEntity attendanceEntity = attendanceService.postAttendancesStart(timeIn, userId);
 

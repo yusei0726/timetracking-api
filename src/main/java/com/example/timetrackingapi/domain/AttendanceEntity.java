@@ -18,7 +18,7 @@ public class AttendanceEntity extends CommonEntity{
     private Integer attendanceId;
 
     @Column(name = "user_id", nullable = false)
-    private Integer userId;
+    private String userId;
 
     @Column(name = "date", nullable = false)
     private LocalDate date;

@@ -27,7 +27,7 @@ public class BreakController implements BreaksApi{
     private final BreakConverter converter;
 
     @Override
-    public ResponseEntity<List<BreakRecord>> getBreaksByUserId(Integer userId, LocalDate date) {
+    public ResponseEntity<List<BreakRecord>> getBreaksByUserId(String userId, LocalDate date) {
         AttendanceEntity attendanceEntity = attendanceService.getAttendancesByUserIdAndDate(date, userId);
         if (attendanceEntity == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
