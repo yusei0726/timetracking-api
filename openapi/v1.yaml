@@ -100,7 +100,7 @@ paths:
             type: string
         - name: date
           in: query
-          required: false
+          required: true
           description: The specific date for which the attendance record is to be retrieved.
           schema:
             type: string
